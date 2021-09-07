@@ -1,6 +1,6 @@
-#define __STDC_FORMAT_MACROS
+#define STDC_FORMAT_MACROS
 #ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS
+#define CRT_SECURE_NO_WARNINGS
 #endif
 #include <bits-stdc++.h>
 #include <fstream>
@@ -68,7 +68,7 @@ int main() {
             fh.read(reinterpret_cast<char*>(&bufferRead.macroOperation), sizeof(bufferRead.macroOperation));
             fh.read(reinterpret_cast<char*>(&bufferRead.microOperation), sizeof(bufferRead.microOperation));
             cout << "=================================================================================================================================================================" << endl;
-            cout << "=========================================================================="<<"RECORD NO." << count << "==========================================================================" << endl;
+            cout << "========================================================================="<<"RECORD NO." << count << "========================================================================" << endl;
         	cout << "=================================================================================================================================================================" << endl;
             cout <<"1.Uop: ["<< bufferRead.microOpCount<<']'
         	<< "||2.PC:[" << bufferRead.instructionAddress << ']'
