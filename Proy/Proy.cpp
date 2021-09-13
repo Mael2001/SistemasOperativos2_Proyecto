@@ -29,13 +29,9 @@ struct Node {
         next = new Node();
     }
     Node(){}
-    inline string toString()
+    inline void toString()
     {
-        string string = "";
-        string += "|" + data.operationType;
-        string += "\nV";
-        string += data.memAddress + "\n";
-       return  string;
+        cout << data.memAddress << "<-" << data.operationType<<endl;
     }
 };
 
@@ -43,13 +39,25 @@ struct NodeList
 {
     Node* origin;
     Node* lastNode;
-    inline string toString()
+    long listSize;
+    inline void toString()
     {
-        string toString = "[Origin Node {" + origin->toString() + "}]";
-        toString+= "\n[Last Node {" + lastNode->toString() + "}]";
-        return toString;
+
     }
 };
+bool existNode(Node* node, NodeList* list)
+{
+    Node* currNode = list->origin;
+    while (currNode != list->lastNode)
+    {
+        if (node == currNode)
+        {
+            return true;
+        }
+        currNode = currNode->next;
+    }
+    return false;
+}
 
 traceRecord hydrateRecord(traceRecord traceLine, string line) {
     vector<string> words{};
@@ -69,14 +77,14 @@ NodeList* memLoader()
     std::string filename;
     NodeList* nodeList = new NodeList();
     cout << "Archivo a leer" << endl;
-    cin >> filename;
+    filename = "bzip";
+    //cin >> filename;
     fh.open("C:/Users/Skytech/OneDrive/Documents/Q4 2021/Siso 2/Proyecto/" + filename + ".trace", std::fstream::in | std::fstream::binary);
-    int count{ 0 };
     if (fh.is_open())
     {
         std::string line;
         while (std::getline(fh, line))
-        {
+    	{
             traceRecord traceLine;
             traceLine = hydrateRecord(traceLine, line);
             Node* newNode = new Node(traceLine);
@@ -87,29 +95,19 @@ NodeList* memLoader()
             }
             else
             {
-                nodeList->lastNode->next = newNode;
-                nodeList->lastNode = newNode;
+	            if (existNode(newNode, nodeList)==false)
+	            {
+                    nodeList->lastNode->next = newNode;
+                    nodeList->lastNode = newNode;
+                    nodeList->listSize += 1;
+	            }
             }
-            count++;
         }
     }
     fh.close();
     return nodeList;
 }
 
-bool existNode(Node* node, NodeList* list)
-{
-    Node* currNode = list->origin;
-    while (currNode != list->lastNode)
-    {
-        if (node == currNode)
-        {
-            return true;
-        }
-        currNode = currNode->next;
-    }
-    return false;
-}
 
 NodeList* cleanOperations(NodeList* nodes)
 {
@@ -117,15 +115,19 @@ NodeList* cleanOperations(NodeList* nodes)
     Node* currNode = nodes->origin;
     cleanList->lastNode = currNode;
     cleanList->origin = currNode;
+    long count{ 1 };
 	while (currNode != nodes->lastNode)
 	{
-		if (!existNode(currNode,cleanList))
+		if (existNode(currNode,cleanList)==false)
 		{
             cleanList->lastNode->next = currNode;
             cleanList->lastNode = currNode;
+            cleanList->listSize += 1;
 		}
+        count++;
         currNode = currNode->next;
 	}
+    cleanList->listSize = count - 1;
     return cleanList;
 }
 void DisplayMemOperations(NodeList* nodes)
@@ -136,6 +138,7 @@ void DisplayMemOperations(NodeList* nodes)
         currNode->toString();
         currNode = currNode->next;
     }
+    cout << nodes->listSize << endl;
 };
 
 int main() {
@@ -161,7 +164,6 @@ int main() {
 	00113460 R
 00194730 R*/
     NodeList* memOperations = memLoader();
-    NodeList* memOperationsClean = cleanOperations(memOperations);
-    DisplayMemOperations(memOperationsClean);
+    DisplayMemOperations(memOperations);
     return 0;
 }
