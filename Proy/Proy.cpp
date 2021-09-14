@@ -50,7 +50,8 @@ bool existNode(Node* node, NodeList* list)
     Node* currNode = list->origin;
     while (currNode != list->lastNode)
     {
-        if (node == currNode)
+        if (node->data.memAddress == currNode->data.memAddress 
+            && node->data.operationType == currNode->data.operationType)
         {
             return true;
         }
@@ -85,6 +86,10 @@ NodeList* memLoader()
         std::string line;
         while (std::getline(fh, line))
     	{
+	        if (nodeList->listSize>10000)
+	        {
+                return nodeList;
+	        }
             traceRecord traceLine;
             traceLine = hydrateRecord(traceLine, line);
             Node* newNode = new Node(traceLine);
@@ -138,7 +143,7 @@ void DisplayMemOperations(NodeList* nodes)
         currNode->toString();
         currNode = currNode->next;
     }
-    cout << nodes->listSize << endl;
+    cout <<"Linked List Size:" << nodes->listSize << endl;
 };
 
 int main() {
