@@ -72,7 +72,17 @@ traceRecord hydrateRecord(traceRecord traceLine, string line) {
     traceLine.operationType = words.at(1).at(0);
     return traceLine;
 }
-NodeList* memLoader()
+void DisplayMemOperations(NodeList* nodes)
+{
+    Node* currNode = nodes->origin;
+    while (currNode != nodes->lastNode)
+    {
+        currNode->toString();
+        currNode = currNode->next;
+    }
+    cout << "Linked List Size:" << nodes->listSize << endl;
+};
+void memLoader()
 {
     std::fstream fh;
     std::string filename;
@@ -88,7 +98,8 @@ NodeList* memLoader()
     	{
 	        if (nodeList->listSize>10000)
 	        {
-                return nodeList;
+                DisplayMemOperations(nodeList);
+                nodeList = new NodeList();
 	        }
             traceRecord traceLine;
             traceLine = hydrateRecord(traceLine, line);
@@ -110,7 +121,6 @@ NodeList* memLoader()
         }
     }
     fh.close();
-    return nodeList;
 }
 
 
@@ -135,16 +145,6 @@ NodeList* cleanOperations(NodeList* nodes)
     cleanList->listSize = count - 1;
     return cleanList;
 }
-void DisplayMemOperations(NodeList* nodes)
-{
-    Node* currNode = nodes->origin;
-    while (currNode != nodes->lastNode)
-    {
-        currNode->toString();
-        currNode = currNode->next;
-    }
-    cout <<"Linked List Size:" << nodes->listSize << endl;
-};
 
 int main() {
     /*
@@ -168,7 +168,6 @@ int main() {
 	00113440 R
 	00113460 R
 00194730 R*/
-    NodeList* memOperations = memLoader();
-    DisplayMemOperations(memOperations);
+	memLoader();
     return 0;
 }
